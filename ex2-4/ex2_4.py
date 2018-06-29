@@ -39,65 +39,11 @@
 # Генерировать абсолютный путь до папки с миграциями. Скрипт при этом лежит в одной папке с папкой 'Migrations', 
 # но запускать мы его можем из любой директории - он будет работать корректно.
 
-import os
-import sys
-
-def get_params():
-    migrations = 'Migrations'
-    file_extension = "sql"
-    ps = []
-    lcs = len(sys.argv)
-    if lcs > 1:
-        for i in range(1,lcs):
-            ps.append(sys.argv[i])
-        if lcs < 3:
-             ps.append(file_extension)
-    else:
-        ps.append(migrations)
-        ps.append(file_extension)
-    return ps
-
-
-
-def create_abs_dir_name(dir_name):
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    migr_dir = os.path.join(current_dir,dir_name)
-    if not os.path.lexists(migr_dir):
-        return None
-    return migr_dir
-
-def search_files_in_directory(dir_name):
-    files_names = []
-    migr_dir = create_abs_dir_name(dir_name)
-    if migr_dir is not None:
-        files_names = os.listdir(migr_dir)
-    return files_names
-
-
-def get_files_by_extensions(dir_name, files_names, file_extension):
-    f_by_ext = []
-    migr_dir = create_abs_dir_name(dir_name)
-    if migr_dir is not None:
-        for fn in files_names:
-            s_ext = fn.split(".")[-1]
-            if file_extension.count(s_ext.lower())>0:
-                f_by_ext.append(os.path.join(migr_dir, fn))
-    return f_by_ext
-
-def get_files_by_words(sparam, l_files):
-    new_l_files=[]
-    for l_file in l_files:
-        with open(l_file, 'r') as fin:
-            text = fin.read()
-            n = text.find(sparam)
-            if n!=-1:
-                new_l_files.append(l_file)
-
-    return new_l_files
+import myfunclib
 
 if __name__ == '__main__':
    
-    ps = get_params()
+    ps = myfunclib.get_params()
 
     fn = []
     while True:
@@ -114,13 +60,13 @@ if __name__ == '__main__':
             print("Пустой или неверный параметр")
         else:
             if com.lower() == "ns":
-               fn = get_files_by_extensions(ps[0], search_files_in_directory(ps[0]), ps[1:])
+               fn = myfunclib.get_files_by_extensions(ps[0], myfunclib.search_files_in_directory(ps[0]), ps[1:])
 
             if len(fn) == 0:
                 print("Список фалов пуст")
                 break
 
-            fn = get_files_by_words(sparam, fn)
+            fn = myfunclib.get_files_by_words(sparam, fn)
             print("Найдено {} файлов:".format(len(fn)))
             #for fel in fn:
             #    print(fel)
