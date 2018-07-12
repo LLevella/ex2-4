@@ -44,7 +44,7 @@ import myfunclib
 if __name__ == '__main__':
    
     ps = myfunclib.get_params()
-
+    migration_directory, *extensions = ps
     fn = []
     while True:
         sparam = ""
@@ -56,19 +56,16 @@ if __name__ == '__main__':
         if com.lower() == "ns" or com.lower() == "ds":
             sparam = input("Введите искомую строку:\n")
 
-        if len(sparam) == 0:
+        if not sparam:
             print("Пустой или неверный параметр")
         else:
             if com.lower() == "ns":
-               fn = myfunclib.get_files_by_extensions(ps[0], myfunclib.search_files_in_directory(ps[0]), ps[1:])
+               fn = myfunclib.get_files_by_extensions(migration_directory, myfunclib.search_files_in_directory(migration_directory), extensions)
 
-            if len(fn) == 0:
-                print("Список фалов пуст")
+            if not fn:
+                print("Список файлов пуст")
                 break
 
             fn = myfunclib.get_files_by_words(sparam, fn)
             print("Найдено {} файлов:".format(len(fn)))
-            #for fel in fn:
-            #    print(fel)
             print("\n".join(fn))
-    pass
